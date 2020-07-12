@@ -2,20 +2,8 @@
 cards = [x for x in range(13)]
 scards = cards[:3]
 
-
-def check(ary):
-    clone = ary[:]
-    prev = None
-    while len(clone) > 0:
-        if prev is not None and (prev + 1) != clone[0]:
-            return False
-        prev = clone[0]
-        del(clone[0])
-        if len(clone) > 0:
-            clone.append(clone[0])
-            del(clone[0])
-    return True
-
+#Slow find combination. Brute force search for every single combination. ~6 billion.
+#Also takes a few minutes to find the correct combination.
 def findCombs(arr):
     for a in range(len(arr)):
         sl0 = removeItem(arr, a)
@@ -58,9 +46,51 @@ def findCombs(arr):
                                                         print("good")
                                                         return candidate
                 
+def check(ary):
+    clone = ary[:]
+    prev = None
+    while len(clone) > 0:
+        if prev is not None and (prev + 1) != clone[0]:
+            return False
+        prev = clone[0]
+        del(clone[0])
+        if len(clone) > 0:
+            clone.append(clone[0])
+            del(clone[0])
+    return True
+
 
 def removeItem(aList, i):
     return aList[:i] + aList[i+1:]
 
 
-print(findCombs(cards))
+#print(findCombs(cards))
+
+# ?  ?   ?  ?   ?   ?  ?  ?   ?   ?  ?  ?   ? 
+# 1, x1, 2, x2, 3, x3, 4, x4, 5, x5, 6, x6, 7
+#   x6     x1     x2     x3     x4     x5
+#   x6     8      x2     9       x4    10
+#   x6            11            x4   
+#   12                          x4
+#                               13
+def find(n):
+    cards = [i for i in range(n)]
+    solution = [None] * n
+    unknownIndexes = [j for j in range(n)]
+    tail = []
+    pushToBack = False
+    while len(cards) > 0:
+        for i in unknownIndexes:
+            if solution[i] is None:
+                if not pushToBack:
+                    solution[i] = cards[0]
+                    del(cards[0])
+                    pushToBack = True
+                else:
+                    tail.append(i)
+                    pushToBack = False
+        unknownIndexes = tail
+        tail = []
+    return solution
+
+print(find(1200))
