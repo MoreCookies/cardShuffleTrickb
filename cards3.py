@@ -1,10 +1,42 @@
-#cards = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"]
-cards = [x for x in range(13)]
-scards = cards[:3]
+# Derek Lai
+
+#testing the new solution
+# ?  ?   ?  ?   ?   ?  ?  ?   ?   ?  ?  ?   ? 
+# 1, x1, 2, x2, 3, x3, 4, x4, 5, x5, 6, x6, 7
+#   x6     x1     x2     x3     x4     x5
+#   x6     8      x2     9       x4    10
+#   x6            11            x4   
+#   12                          x4
+#                               13
+# The actual function. This is way faster, and even works with large numbers.
+def find(n):
+    cards = [i for i in range(n)]
+    solution = [None] * n
+    unknownIndexes = [j for j in range(n)]
+    tail = []
+    pushToBack = False
+    while len(cards) > 0:
+        for i in unknownIndexes:
+            if solution[i] is None:
+                if not pushToBack:
+                    solution[i] = cards[0]
+                    del(cards[0])
+                    pushToBack = True
+                else:
+                    tail.append(i)
+                    pushToBack = False
+        unknownIndexes = tail
+        tail = []
+    return solution
+
+print(find(13))
+
 
 #Slow find combination. Brute force search for every single combination. ~6 billion.
 #Also takes a few minutes to find the correct combination.
 def findCombs(arr):
+    cards = [x for x in range(13)]
+    scards = cards[:3]
     for a in range(len(arr)):
         sl0 = removeItem(arr, a)
         #print(sl0)
@@ -66,31 +98,3 @@ def removeItem(aList, i):
 
 #print(findCombs(cards))
 
-# ?  ?   ?  ?   ?   ?  ?  ?   ?   ?  ?  ?   ? 
-# 1, x1, 2, x2, 3, x3, 4, x4, 5, x5, 6, x6, 7
-#   x6     x1     x2     x3     x4     x5
-#   x6     8      x2     9       x4    10
-#   x6            11            x4   
-#   12                          x4
-#                               13
-def find(n):
-    cards = [i for i in range(n)]
-    solution = [None] * n
-    unknownIndexes = [j for j in range(n)]
-    tail = []
-    pushToBack = False
-    while len(cards) > 0:
-        for i in unknownIndexes:
-            if solution[i] is None:
-                if not pushToBack:
-                    solution[i] = cards[0]
-                    del(cards[0])
-                    pushToBack = True
-                else:
-                    tail.append(i)
-                    pushToBack = False
-        unknownIndexes = tail
-        tail = []
-    return solution
-
-print(find(1200))
